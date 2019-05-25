@@ -1,5 +1,8 @@
 version: 1.0.{build}
 
+pull_requests:
+  do_not_increment_build_number: true
+
 init:
   - cmd: set BUILD_VERSION=%VERSION%.%APPVEYOR_BUILD_NUMBER%
   - cmd: echo %APPVEYOR_REPO_BRANCH%
@@ -12,17 +15,11 @@ init:
 install:
   appveyor DownloadFile https://dist.nuget.org/win-x86-commandline/latest/nuget.exe
 
-pull_requests:
-  do_not_increment_build_number: true
-
 image: Visual Studio 2019
 
 configuration: Release
 
 platform: Any CPU
-
-before_build:
-- cmd: dotnet restore
 
 nuget:
   disable_publish_on_pr: true
@@ -36,9 +33,17 @@ dotnet_csproj:
   file_version: $(PROJECT_VERSION)
   informational_version: $(PROJECT_VERSION)
 
+before_build:
+- cmd: dotnet restore
+
 build:
   verbosity: minimal
   publish_nuget: true
+  include_nuget_references: true
+
+after_build:
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%
+  - cmd: ls
 
 artifacts:
   - path: bin
