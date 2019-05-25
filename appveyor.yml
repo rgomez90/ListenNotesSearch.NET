@@ -38,8 +38,6 @@ before_build:
 
 build:
   verbosity: minimal
-  publish_nuget: true
-  include_nuget_references: true
 
 after_build:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
