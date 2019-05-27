@@ -33,7 +33,7 @@ dotnet_csproj:
   informational_version: $(PROJECT_VERSION)
 
 before_build:
-- cmd: dotnet restore
+- cmd: dotnet restore src/ListenNotesSearch.NET.sln
 
 build:
   verbosity: minimal
