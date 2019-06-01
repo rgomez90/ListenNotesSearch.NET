@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ListenNotesSearch.NET.Models
@@ -16,7 +17,7 @@ namespace ListenNotesSearch.NET.Models
             NullValueHandling = NullValueHandling.Ignore)]
         public bool ExplicitContent { get; set; }
 
-        [JsonProperty("website", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("website", NullValueHandling = NullValueHandling.Ignore)]
         public string Website { get; set; }
 
         [JsonProperty("total_episodes", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
@@ -24,14 +25,16 @@ namespace ListenNotesSearch.NET.Models
 
         [JsonProperty("earliest_pub_date_ms", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]
-        public int EarliestPubDateMs { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime EarliestPubDateMs { get; set; }
 
         [JsonProperty("rss", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Rss { get; set; }
 
         [JsonProperty("latest_pub_date_ms", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]
-        public int LatestPubDateMs { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime LatestPubDateMs { get; set; }
 
         [JsonProperty("title", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; set; }
@@ -42,7 +45,7 @@ namespace ListenNotesSearch.NET.Models
         [JsonProperty("description", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
 
-        [JsonProperty("email", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("email", NullValueHandling = NullValueHandling.Ignore)]
         public string Email { get; set; }
 
         [JsonProperty("image", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
@@ -78,6 +81,7 @@ namespace ListenNotesSearch.NET.Models
 
         [JsonProperty("next_episode_pub_date", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]
-        public int NextEpisodePubDate { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime NextEpisodePubDate { get; set; }
     }
 }

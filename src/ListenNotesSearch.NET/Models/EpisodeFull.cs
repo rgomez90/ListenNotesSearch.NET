@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace ListenNotesSearch.NET.Models
 {
@@ -10,8 +11,9 @@ namespace ListenNotesSearch.NET.Models
         public bool MaybeAudioInvalid { get; set; }
 
         [JsonProperty("pub_date_ms", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public int PubDateMs { get; set; }
-
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime PubDateMs { get; set; }
+        
         [JsonProperty("audio", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Audio { get; set; }
 

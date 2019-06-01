@@ -25,12 +25,12 @@ namespace ListenNotesSearch.NET
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        Task<SearchResponse> SearchAsync(string q,
-            double? sortByDate = null, Type? type = null,
+        Task<SearchResponse<T>> SearchAsync<T>(string q,
+            double? sortByDate = null, 
             int? offset = null, int? lenMin = null, int? lenMax = null, string genreIds = null,
             int? publishedBefore = null, int? publishedAfter = null, string onlyIn = null, string language = null,
             string ocid = null, string ncid = null, double? safeMode = null,
-            CancellationToken cancellationToken = default(CancellationToken));
+            CancellationToken cancellationToken = default(CancellationToken)) where T:ISearchResult;
 
         /// <summary>Typeahead search</summary>
         /// <param name="q">Search term, e.g., person, place, topic...</param>

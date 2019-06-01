@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace ListenNotesSearch.NET.Models
 {
-    public class SearchResponse
+    public class SearchResponse<T>
     {
         /// <summary>Pass this value to the **offset** parameter to do pagination of search results.</summary>
         [JsonProperty("next_offset", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
@@ -23,6 +23,6 @@ namespace ListenNotesSearch.NET.Models
 
         /// <summary>A list of search results.</summary>
         [JsonProperty("results", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public List<EpisodeSearchResult> Results { get; set; }
+        public List<T> Results { get; set; }
     }
 }

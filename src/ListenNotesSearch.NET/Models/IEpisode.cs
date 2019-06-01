@@ -1,9 +1,11 @@
-﻿namespace ListenNotesSearch.NET.Models
+﻿using System;
+
+namespace ListenNotesSearch.NET.Models
 {
     public interface IEpisode
     {
         bool MaybeAudioInvalid { get; set; }
-        int PubDateMs { get; set; }
+        DateTime PubDateMs { get; set; }
         string Audio { get; set; }
         string ListennotesEditUrl { get; set; }
         string Image { get; set; }

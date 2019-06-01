@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ListenNotesSearch.NET.Models
@@ -19,7 +20,8 @@ namespace ListenNotesSearch.NET.Models
         public string SourceDomain { get; set; }
 
         [JsonProperty("pub_date_ms", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public int PubDateMs { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime PubDateMs { get; set; }
 
         [JsonProperty("listennotes_url", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]

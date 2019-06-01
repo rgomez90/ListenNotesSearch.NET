@@ -1,17 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ListenNotesSearch.NET.Models
 {
     /// <summary>When **type** is *curated*.</summary>
 
-    public class CuratedListSearchResult
+    public class CuratedListSearchResult:ISearchResult
     {
         [JsonProperty("id", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }
 
         [JsonProperty("pub_date_ms", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public int PubDateMs { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime PubDateMs { get; set; }
 
         /// <summary>Highlighted segment of this curated list's description</summary>
         [JsonProperty("description_highlighted", Required = Required.DisallowNull,
@@ -45,5 +47,7 @@ namespace ListenNotesSearch.NET.Models
         /// <summary>Up to 5 podcasts in this curated list.</summary>
         [JsonProperty("podcasts", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public ICollection<PodcastMinimum> Podcasts { get; set; }
+
+        public Type Type => Type.Curated;
     }
 }

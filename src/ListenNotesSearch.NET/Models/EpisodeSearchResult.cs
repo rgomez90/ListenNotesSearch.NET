@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ListenNotesSearch.NET.Models
 {
     /// <summary>When **type** is *episode*.</summary>
-    public class EpisodeSearchResult
+    public class EpisodeSearchResult:ISearchResult
     {
         [JsonProperty("audio", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Audio { get; set; }
@@ -66,7 +67,8 @@ namespace ListenNotesSearch.NET.Models
         public int ItunesId { get; set; }
 
         [JsonProperty("pub_date_ms", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
-        public int PubDateMs { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime PubDateMs { get; set; }
 
         [JsonProperty("id", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }
@@ -88,5 +90,7 @@ namespace ListenNotesSearch.NET.Models
         [JsonProperty("explicit_content", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]
         public bool ExplicitContent { get; set; }
+
+        public Type Type => Type.Episode;
     }
 }

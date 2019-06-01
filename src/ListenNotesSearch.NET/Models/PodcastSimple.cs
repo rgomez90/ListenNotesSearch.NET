@@ -1,32 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace ListenNotesSearch.NET.Models
 {
-    public interface IPodcast
-    {
-        bool IsClaimed { get; set; }
-        bool ExplicitContent { get; set; }
-        string Website { get; set; }
-        int TotalEpisodes { get; set; }
-        int EarliestPubDateMs { get; set; }
-        string Rss { get; set; }
-        int LatestPubDateMs { get; set; }
-        string Title { get; set; }
-        string Language { get; set; }
-        string Description { get; set; }
-        string Email { get; set; }
-        string Image { get; set; }
-        string Thumbnail { get; set; }
-        string ListennotesUrl { get; set; }
-        string Id { get; set; }
-        string Country { get; set; }
-        string Publisher { get; set; }
-        int ItunesId { get; set; }
-        PodcastLookingForField LookingFor { get; set; }
-        PodcastExtraField Extra { get; set; }
-        GenreIdsField GenreIds { get; set; }
-    }
-
     public class PodcastSimple : IPodcast
     {
         [JsonProperty("is_claimed", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
@@ -44,14 +20,16 @@ namespace ListenNotesSearch.NET.Models
 
         [JsonProperty("earliest_pub_date_ms", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]
-        public int EarliestPubDateMs { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime EarliestPubDateMs { get; set; }
 
         [JsonProperty("rss", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Rss { get; set; }
 
         [JsonProperty("latest_pub_date_ms", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]
-        public int LatestPubDateMs { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime LatestPubDateMs { get; set; }
 
         [JsonProperty("title", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; set; }

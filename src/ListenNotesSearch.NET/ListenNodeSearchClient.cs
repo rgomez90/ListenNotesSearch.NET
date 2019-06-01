@@ -34,6 +34,8 @@ namespace ListenNotesSearch.NET
 
         public Uri BaseUrl { get; } = new Uri("https://listen-api.listennotes.com/api/v2");
 
+        public event EventHandler<string> NewResponse; 
+
         protected JsonSerializerSettings JsonSerializerSettings => _settings.Value;
         
         /// <summary>Fetch a list of best podcasts by genre</summary>
@@ -203,7 +205,7 @@ namespace ListenNotesSearch.NET
                 queryParams.Add("sort", nextEpisodePubDate);
             }
 
-            var request = CreateRequest($"podcast/{id}", queryParams);
+            var request = CreateRequest($"podcasts/{id}", queryParams);
             return await SendAndProcessRequest<PodcastFull>(cancellationToken, request);
         }
         
@@ -278,12 +280,11 @@ namespace ListenNotesSearch.NET
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public async Task<SearchResponse> SearchAsync(string q,
-            double? sortByDate = null,
-            Type? type = null, int? offset = null, int? lenMin = null, int? lenMax = null, string genreIds = null,
+        public async Task<SearchResponse<T>> SearchAsync<T>(string q,
+            double? sortByDate = null, int? offset = null, int? lenMin = null, int? lenMax = null, string genreIds = null,
             int? publishedBefore = null, int? publishedAfter = null, string onlyIn = null, string language = null,
             string ocid = null, string ncid = null, double? safeMode = null,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default(CancellationToken)) where T:ISearchResult
         {
             if (q == null)
                 throw new ArgumentNullException(nameof(q));
@@ -292,10 +293,23 @@ namespace ListenNotesSearch.NET
             {
                 queryParams.Add("sort_by_date", sortByDate);
             }
-            if (type != null)
+
+            if (typeof(T) != typeof(EpisodeSearchResult))
             {
+                Type type = Type.Episode;
+                if (typeof(T) == typeof(PodcastSearchResult))
+                {
+                    type = Type.Podcast;
+                }
+
+                if (typeof(T) == typeof(CuratedListSearchResult))
+                {
+                    type = Type.Curated;
+                    
+                }
                 queryParams.Add("type", type);
             }
+
             if (offset != null)
             {
                 queryParams.Add("offset", offset);
@@ -343,7 +357,7 @@ namespace ListenNotesSearch.NET
 
             var request = CreateRequest("search", queryParams);
 
-            return await SendAndProcessRequest<SearchResponse>(cancellationToken, request);
+            return await SendAndProcessRequest<SearchResponse<T>>(cancellationToken, request);
         }
         
         /// <summary>Submit a podcast to Listen Notes database</summary>
@@ -501,10 +515,12 @@ namespace ListenNotesSearch.NET
             {
                 foreach (var queryParam in queryParams)
                 {
-                    request.AddParameter(queryParam.Key,
+                    request.AddQueryParameter(queryParam.Key,
                         ConvertToString(queryParam.Value, CultureInfo.InvariantCulture));
                 }
             }
+            var fullUrl = _client.BuildUri(request);
+            var s = fullUrl.AbsoluteUri;
             return request;
         }
 
@@ -516,6 +532,21 @@ namespace ListenNotesSearch.NET
         {
             var response = await _client.ExecuteTaskAsync<T>(request, cancellationToken)
                 .ConfigureAwait(false);
+
+            //
+            var dict = new Dictionary<string, string>
+            {
+                {"SC", response.StatusCode.ToString()},
+                {"Content", response.Content},
+                {"Error", response.ErrorMessage}
+            };
+            var sb = new StringBuilder();
+            foreach (var item in dict)
+            {
+                sb.AppendLine(item.Key + " - " + item.Value);
+            }
+            NewResponse?.Invoke(this,sb.ToString());
+            //
             return CheckStatusResponse(response);
         }
     }

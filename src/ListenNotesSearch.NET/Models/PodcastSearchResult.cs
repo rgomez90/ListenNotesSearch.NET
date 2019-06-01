@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace ListenNotesSearch.NET.Models
 {
     /// <summary>When **type** is *podcast*.</summary>
 
-    public class PodcastSearchResult
+    public class PodcastSearchResult: ISearchResult
     {
         [JsonProperty("rss", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Rss { get; set; }
@@ -45,11 +46,13 @@ namespace ListenNotesSearch.NET.Models
 
         [JsonProperty("latest_pub_date_ms", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]
-        public int LatestPubDateMs { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime LatestPubDateMs { get; set; }
 
         [JsonProperty("earliest_pub_date_ms", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]
-        public int EarliestPubDateMs { get; set; }
+        [JsonConverter(typeof(DateTimeFromUnixMsJsonConverter))]
+        public DateTime EarliestPubDateMs { get; set; }
 
         [JsonProperty("id", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }
@@ -64,11 +67,13 @@ namespace ListenNotesSearch.NET.Models
         [JsonProperty("total_episodes", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
         public int TotalEpisodes { get; set; }
 
-        [JsonProperty("email", Required = Required.DisallowNull, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("email", /*Required = Required.DisallowNull,*/ NullValueHandling = NullValueHandling.Ignore)]
         public string Email { get; set; }
 
         [JsonProperty("explicit_content", Required = Required.DisallowNull,
             NullValueHandling = NullValueHandling.Ignore)]
         public bool ExplicitContent { get; set; }
+
+        public Type Type => Type.Podcast;
     }
 }
